@@ -3,7 +3,7 @@
   "session": {
     "new": true,
     "application": {
-      "applicationId": "MOCHATESTS"
+      "applicationId": "amzn1.ask.skill.MOCHATESTS"
     },
     "sessionId": "session1234",
     "attributes": {},
