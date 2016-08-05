@@ -5,39 +5,39 @@ var sinon = require('sinon');
 
 describe('Main App Functionality', function () {
 
-    before(function () {
+    before(function() {
         this.request = JSON.parse(JSON.stringify(require('./RequestTemplate.json')));
         this.oldAppID = process.env.ALEXA_APP_ID;
         process.env.ALEXA_APP_ID = 'BAD_APP_ID';
     });
 
-    after('reset environment variables to default state', function () {
+    after('reset environment variables to default state', function() {
         process.env.ALEXA_APP_ID = this.oldAppID;
     });
 
     it('should reject invalid AppID', function (done) {
         this.lambda.handler(this.request, {
             succeed: function (res) {
-                expect(res).to.have.deep.property('response.outputSpeech.ssml').that.matches(/unauthorized App ID/i);
+                expect(res).to.not.have.deep.property('response.outputSpeech.ssml');
                 done();
-            }, fail: function (res) {
+            }, fail: function(res) {
                 done(new Error('Lambda function failed: ' + err));
             }
         });
     });
 });
 
-describe('Requests', function () {
+describe('Requests', function() {
 
-    before(function () {
-        this.lambdaFail = function (done) {
-            return function (err) {
+    before(function() {
+        this.lambdaFail = function(done) {
+            return function(err) {
                 done(new Error('Lambda function failed: ' + err));
             }
         };
     });
 
-    beforeEach(function () {
+    beforeEach(function() {
         // Yes this is slow but hey it's just tests?
         this.request = JSON.parse(JSON.stringify(require('./RequestTemplate.json')));
     });
@@ -64,13 +64,13 @@ describe('Requests', function () {
 
     describe('Intents', function () {
 
-        beforeEach(function () {
+        beforeEach(function() {
             this.request.request.type = 'IntentRequest';
         });
 
-        describe('Prompts', function () {
+        describe('Prompts', function() {
 
-            beforeEach(function () {
+            beforeEach(function() {
                 this.request.session.attributes.promptData = {
                     yesResponse: "MochaTest YesResponse",
                     noResponse: "MochaTest NoResponse",
@@ -79,22 +79,22 @@ describe('Requests', function () {
                 };
             });
 
-            describe('AMAZON.YesIntent', function () {
-                beforeEach(function () {
+            describe('AMAZON.YesIntent', function() {
+                beforeEach(function() {
                     this.request.request.intent.name = 'AMAZON.YesIntent';
                 });
 
-                describe('yesAction: startEpisode', function () {
-                    beforeEach(function () {
+                describe('yesAction: startEpisode', function() {
+                    beforeEach(function() {
                         this.request.session.attributes.promptData.yesAction = "startEpisode";
                     });
 
-                    it('should play the episode in promptData from beginning when no offset is provided', function (done) {
+                    it('should play the episode in promptData from beginning when no offset is provided', function(done) {
                         this.request.session.attributes.promptData.mediaKey = "111111";
 
                         var self = this;
                         this.lambda.handler(this.request, {
-                            succeed: function (res) {
+                            succeed: function(res) {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest YesResponse/i);
                                 expect(self.plexAPIStubs.perform)
@@ -106,13 +106,13 @@ describe('Requests', function () {
                         });
                     });
 
-                    it('should play using the offset if provided', function (done) {
+                    it('should play using the offset if provided', function(done) {
                         this.request.session.attributes.promptData.mediaKey = "111111";
                         this.request.session.attributes.promptData.mediaOffset = "12345";
 
                         var self = this;
                         this.lambda.handler(this.request, {
-                            succeed: function (res) {
+                            succeed: function(res) {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest YesResponse/i);
                                 expect(self.plexAPIStubs.perform)
@@ -122,7 +122,7 @@ describe('Requests', function () {
                         });
                     });
 
-                    it('should gracefully handle a plex error', function (done) {
+                    it('should gracefully handle a plex error', function(done) {
                         this.request.session.attributes.promptData.mediaKey = "222222";
 
                         this.plexAPIStubs.perform.restore();
@@ -131,7 +131,7 @@ describe('Requests', function () {
 
                         var self = this;
                         this.lambda.handler(this.request, {
-                            succeed: function (res) {
+                            succeed: function(res) {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/sorry/i);
                                 expect(self.plexAPIStubs.perform)
@@ -142,10 +142,10 @@ describe('Requests', function () {
                     });
                 });
 
-                it('should respond with the yesResponse message', function (done) {
+                it('should respond with the yesResponse message', function(done) {
                     var self = this;
                     this.lambda.handler(this.request, {
-                        succeed: function (res) {
+                        succeed: function(res) {
                             expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                 .that.matches(/MochaTest YesResponse/i);
                             done();
@@ -153,22 +153,22 @@ describe('Requests', function () {
                     });
                 });
 
-                it('should gracefully handle a lack of promptData by closing the session', function (done) {
+                it('should gracefully handle a lack of promptData by closing the session', function(done) {
                     delete this.request.session.attributes.promptData;
                     var self = this;
                     this.lambda.handler(this.request, {
-                        succeed: function (res) {
+                        succeed: function(res) {
                             expect(res).to.not.have.deep.property('response.outputSpeech.ssml');
                             done();
                         }, fail: self.lambdaFail(done)
                     });
                 });
 
-                it('should gracefully handle an unknown yesAction by closing the session', function (done) {
+                it('should gracefully handle an unknown yesAction by closing the session', function(done) {
                     this.request.session.attributes.promptData.yesAction = "MochaTestUnknownAction";
                     var self = this;
                     this.lambda.handler(this.request, {
-                        succeed: function (res) {
+                        succeed: function(res) {
                             expect(res).to.not.have.deep.property('response.outputSpeech.ssml');
                             done();
                         }, fail: self.lambdaFail(done)
@@ -176,23 +176,23 @@ describe('Requests', function () {
                 });
             });
 
-            describe('AMAZON.NoIntent', function () {
+            describe('AMAZON.NoIntent', function() {
 
-                beforeEach(function () {
+                beforeEach(function() {
                     this.request.request.intent.name = 'AMAZON.NoIntent';
                 });
 
-                describe('noAction: startEpisode', function () {
-                    beforeEach(function () {
+                describe('noAction: startEpisode', function() {
+                    beforeEach(function() {
                         this.request.session.attributes.promptData.noAction = "startEpisode";
                     });
 
-                    it('should play the episode in promptData from beginning when no offset is provided', function (done) {
+                    it('should play the episode in promptData from beginning when no offset is provided', function(done) {
                         this.request.session.attributes.promptData.noMediaKey = "111111";
 
                         var self = this;
                         this.lambda.handler(this.request, {
-                            succeed: function (res) {
+                            succeed: function(res) {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest NoResponse/);
                                 expect(self.plexAPIStubs.perform)
@@ -203,13 +203,13 @@ describe('Requests', function () {
                         });
                     });
 
-                    it('should play using the offset if provided', function (done) {
+                    it('should play using the offset if provided', function(done) {
                         this.request.session.attributes.promptData.noMediaKey = "111111";
                         this.request.session.attributes.promptData.noMediaOffset = "12345";
 
                         var self = this;
                         this.lambda.handler(this.request, {
-                            succeed: function (res) {
+                            succeed: function(res) {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest NoResponse/);
                                 expect(self.plexAPIStubs.perform)
@@ -219,7 +219,7 @@ describe('Requests', function () {
                         });
                     });
 
-                    it('should use the "no" versions of promptData', function (done) {
+                    it('should use the "no" versions of promptData', function(done) {
                         this.request.session.attributes.promptData.mediaKey = "111111";
                         this.request.session.attributes.promptData.mediaOffset = "12345";
                         this.request.session.attributes.promptData.noMediaKey = "222222";
@@ -227,7 +227,7 @@ describe('Requests', function () {
 
                         var self = this;
                         this.lambda.handler(this.request, {
-                            succeed: function (res) {
+                            succeed: function(res) {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest NoResponse/);
                                 expect(self.plexAPIStubs.perform)
@@ -238,7 +238,7 @@ describe('Requests', function () {
                         });
                     });
 
-                    it('should gracefully handle a plex error', function (done) {
+                    it('should gracefully handle a plex error', function(done) {
                         this.request.session.attributes.promptData.noMediaKey = "222222";
 
                         this.plexAPIStubs.perform.restore();
@@ -247,7 +247,7 @@ describe('Requests', function () {
 
                         var self = this;
                         this.lambda.handler(this.request, {
-                            succeed: function (res) {
+                            succeed: function(res) {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/sorry/i);
                                 expect(self.plexAPIStubs.perform)
@@ -257,11 +257,11 @@ describe('Requests', function () {
                         });
                     });
                 });
-
-                it('should respond with the noResponse message', function (done) {
+                
+                it('should respond with the noResponse message', function(done) {
                     var self = this;
                     this.lambda.handler(this.request, {
-                        succeed: function (res) {
+                        succeed: function(res) {
                             expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                 .that.matches(/MochaTest NoResponse/);
                             done();
@@ -269,22 +269,22 @@ describe('Requests', function () {
                     });
                 });
 
-                it('should gracefully handle a lack of promptData by closing the session', function (done) {
+                it('should gracefully handle a lack of promptData by closing the session', function(done) {
                     delete this.request.session.attributes.promptData;
                     var self = this;
                     this.lambda.handler(this.request, {
-                        succeed: function (res) {
+                        succeed: function(res) {
                             expect(res).to.not.have.deep.property('response.outputSpeech.ssml');
                             done();
                         }, fail: self.lambdaFail(done)
                     });
                 });
 
-                it('should gracefully handle an unknown noAction by closing the session', function (done) {
+                it('should gracefully handle an unknown noAction by closing the session', function(done) {
                     this.request.session.attributes.promptData.noAction = "MochaTestUnknownAction";
                     var self = this;
                     this.lambda.handler(this.request, {
-                        succeed: function (res) {
+                        succeed: function(res) {
                             expect(res).to.not.have.deep.property('response.outputSpeech.ssml');
                             done();
                         }, fail: self.lambdaFail(done)
@@ -293,8 +293,8 @@ describe('Requests', function () {
             });
         });
 
-        describe('OnDeckIntent', function () {
-            beforeEach(function () {
+        describe('OnDeckIntent', function() {
+            beforeEach(function() {
                 this.request.request.intent.name = 'OnDeckIntent';
             });
 
@@ -303,7 +303,7 @@ describe('Requests', function () {
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.card.title')
                             .that.matches(/ready to watch/i);
@@ -317,11 +317,11 @@ describe('Requests', function () {
             });
 
             it('should handle a response with zero shows', function (done) {
-                this.plexAPIStubs.query.withArgs('/library/sections/1/onDeck').resolves(function () {
+                this.plexAPIStubs.query.withArgs('/library/sections/1/onDeck').resolves(function(){
                     var response = JSON.parse(JSON.stringify(require('./samples/library_onDeck.json')));
                     response._children = [];
                     return response;
-                } ());
+                }());
 
                 var self = this;
                 this.lambda.handler(this.request, {
@@ -340,7 +340,7 @@ describe('Requests', function () {
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
@@ -352,18 +352,18 @@ describe('Requests', function () {
             });
         });
 
-        describe('StartShowIntent', function () {
+        describe('StartShowIntent', function() {
 
-            beforeEach(function () {
+            beforeEach(function() {
                 this.request.request.intent.name = 'StartShowIntent';
             });
 
             it('should play a random episode if they\'ve all been watched', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show I've finished watching" };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show I've finished watching"};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         console.log(res);
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
@@ -375,11 +375,11 @@ describe('Requests', function () {
             });
 
             it('should offer to play a partially-watched episode when looking for a random one', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "A fully watched show with a partially watched episode" };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "A fully watched show with a partially watched episode"};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.false;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/would you like to resume/i);
@@ -395,11 +395,11 @@ describe('Requests', function () {
             });
 
             it('should play the next episode if there are any unwatched ones', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: 'a show with unwatched episodes' };
+                this.request.request.intent.slots.showName = {name: 'showName', value: 'a show with unwatched episodes'};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/next episode/i);
@@ -410,11 +410,11 @@ describe('Requests', function () {
             });
 
             it('should start from where the user left off if show is partially watched', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: 'A show with an unwatched partially watched episode' };
+                this.request.request.intent.slots.showName = {name: 'showName', value: 'A show with an unwatched partially watched episode'};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/from where you left off/i);
@@ -425,11 +425,11 @@ describe('Requests', function () {
             });
 
             it('should ask for confirmation if the show name match has low confidence', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: 'unwat' };
+                this.request.request.intent.slots.showName = {name: 'showName', value: 'unwat'};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.false;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/is that correct/i);
@@ -446,18 +446,18 @@ describe('Requests', function () {
 
             // TODO this is really a test of the method that does this, so isolate that in to its own test
             it('should be able to find the next episode even if the array is out of order', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: 'a show with unwatched episodes' };
+                this.request.request.intent.slots.showName = {name: 'showName', value: 'a show with unwatched episodes'};
 
                 this.plexAPIStubs.query.withArgs('/library/metadata/1/allLeaves')
-                    .resolves(function () {
+                    .resolves(function(){
                         var result = JSON.parse(JSON.stringify(require('./samples/library_metadata_showepisodes_withunwatched.json')));
                         result._children.reverse();
                         return result;
-                    } ());
+                    }());
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/next episode.*Resurrection/i);
@@ -468,11 +468,11 @@ describe('Requests', function () {
             });
 
             it('should gracefully fail if the show name is not found', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: 'q' };
+                this.request.request.intent.slots.showName = {name: 'showName', value: 'q'};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
@@ -485,14 +485,14 @@ describe('Requests', function () {
             });
 
             it('should handle an error on query for all show names', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show I've finished watching" };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show I've finished watching"};
 
                 this.plexAPIStubs.query.withArgs('/library/sections/1/all')
                     .rejects(new Error("Stub error from Plex API"));
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
@@ -507,7 +507,7 @@ describe('Requests', function () {
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
@@ -518,18 +518,18 @@ describe('Requests', function () {
             });
         });
 
-        describe('StartRandomShowIntent', function () {
+        describe('StartRandomShowIntent', function() {
 
             beforeEach(function () {
                 this.request.request.intent.name = 'StartRandomShowIntent';
             });
 
             it('should play a random episode of the requested show', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show with unwatched episodes" };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show with unwatched episodes"};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/enjoy this episode from season/i);
@@ -540,11 +540,11 @@ describe('Requests', function () {
             });
 
             it('should gracefully fail if the show name is not found', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: 'q' };
+                this.request.request.intent.slots.showName = {name: 'showName', value: 'q'};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         //console.log(res);
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.not.have.deep.property('response.card');
@@ -562,7 +562,7 @@ describe('Requests', function () {
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
@@ -573,14 +573,14 @@ describe('Requests', function () {
             });
 
             it('should handle an error from the API', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show I've finished watching" };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show I've finished watching"};
 
                 this.plexAPIStubs.query.withArgs('/library/sections/1/all')
                     .rejects(new Error("Stub error from Plex API"));
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/sorry/i);
                         done();
@@ -589,7 +589,7 @@ describe('Requests', function () {
             });
         });
 
-        describe('StartHighRatedEpisodeIntent', function () {
+        describe('StartHighRatedEpisodeIntent', function() {
 
             beforeEach(function () {
                 this.request.request.intent.name = 'StartHighRatedEpisodeIntent';
@@ -597,11 +597,11 @@ describe('Requests', function () {
 
             it('should play a random episode of the requested show', function (done) {
                 // TODO this test doesn't actually veirfy that it's getting a high rated
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show with unwatched episodes" };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show with unwatched episodes"};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/enjoy this episode from season/i);
@@ -612,11 +612,11 @@ describe('Requests', function () {
             });
 
             it('should gracefully fail if the show name is not found', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: 'q' };
+                this.request.request.intent.slots.showName = {name: 'showName', value: 'q'};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         //console.log(res);
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.not.have.deep.property('response.card');
@@ -634,7 +634,7 @@ describe('Requests', function () {
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
@@ -645,14 +645,14 @@ describe('Requests', function () {
             });
 
             it('should handle an error from the API', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show I've finished watching" };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show I've finished watching"};
 
                 this.plexAPIStubs.query.withArgs('/library/sections/1/all')
                     .rejects(new Error("Stub error from Plex API"));
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/sorry/i);
                         done();
@@ -661,20 +661,20 @@ describe('Requests', function () {
             });
         });
 
-        describe('StartSpecificEpisodeIntent', function () {
+        describe('StartSpecificEpisodeIntent', function() {
 
             beforeEach(function () {
                 this.request.request.intent.name = 'StartSpecificEpisodeIntent';
             });
 
             it('should play an episode of a specified show when a season and episode number are provided', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show with unwatched episodes" };
-                this.request.request.intent.slots.seasonNumber = { name: 'seasonNumber', value: 2 };
-                this.request.request.intent.slots.episodeNumber = { name: 'episodeNumber', value: 3 };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show with unwatched episodes"};
+                this.request.request.intent.slots.seasonNumber = {name: 'seasonNumber', value: 2};
+                this.request.request.intent.slots.episodeNumber = {name: 'episodeNumber', value: 3};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/S2E3/i);
@@ -685,12 +685,12 @@ describe('Requests', function () {
             });
 
             it('should play an episode of a specified show when only an episode number is provided, which refers to both a season and an episode', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show with unwatched episodes" };
-                this.request.request.intent.slots.episodeNumber = { name: 'episodeNumber', value: 208 };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show with unwatched episodes"};
+                this.request.request.intent.slots.episodeNumber = {name: 'episodeNumber', value: 208};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/S2E8/i);
@@ -701,12 +701,12 @@ describe('Requests', function () {
             });
 
             it('should play an episode of a specified show when only an episode number is provided that does not indicate a season', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show with unwatched episodes" };
-                this.request.request.intent.slots.episodeNumber = { name: 'episodeNumber', value: 4 };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show with unwatched episodes"};
+                this.request.request.intent.slots.episodeNumber = {name: 'episodeNumber', value: 4};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/S1E4/i);
@@ -717,11 +717,11 @@ describe('Requests', function () {
             });
 
             it('should gracefully fail if the show name is not found', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: 'q' };
+                this.request.request.intent.slots.showName = {name: 'showName', value: 'q'};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/I couldn't find that show in your library/i);
                         expect(res).to.not.have.deep.property('response.card');
@@ -737,7 +737,7 @@ describe('Requests', function () {
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         console.warn(res);
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/No show specified/i);
@@ -747,13 +747,13 @@ describe('Requests', function () {
             });
 
             it('should give feedback if a non-existant season was requested ', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show with unwatched episodes" };
-                this.request.request.intent.slots.seasonNumber = { name: 'seasonNumber', value: 10 };
-                this.request.request.intent.slots.episodeNumber = { name: 'episodeNumber', value: 1 };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show with unwatched episodes"};
+                this.request.request.intent.slots.seasonNumber = {name: 'seasonNumber', value: 10};
+                this.request.request.intent.slots.episodeNumber = {name: 'episodeNumber', value: 1};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/there does not appear to be a season/i);
@@ -765,13 +765,13 @@ describe('Requests', function () {
             });
 
             it('should give feedback if a non-existant episode was requested ', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show with unwatched episodes" };
-                this.request.request.intent.slots.seasonNumber = { name: 'seasonNumber', value: 2 };
-                this.request.request.intent.slots.episodeNumber = { name: 'episodeNumber', value: 80 };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show with unwatched episodes"};
+                this.request.request.intent.slots.seasonNumber = {name: 'seasonNumber', value: 2};
+                this.request.request.intent.slots.episodeNumber = {name: 'episodeNumber', value: 80};
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/there does not appear to be an episode/i);
@@ -783,14 +783,14 @@ describe('Requests', function () {
             });
 
             it('should handle an error from the API', function (done) {
-                this.request.request.intent.slots.showName = { name: 'showName', value: "a show I've finished watching" };
+                this.request.request.intent.slots.showName = {name: 'showName', value: "a show I've finished watching"};
 
                 this.plexAPIStubs.query.withArgs('/library/sections/1/all')
                     .rejects(new Error("Stub error from Plex API"));
 
                 var self = this;
                 this.lambda.handler(this.request, {
-                    succeed: function (res) {
+                    succeed: function(res) {
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/sorry/i);
                         done();
