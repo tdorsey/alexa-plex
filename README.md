@@ -1,11 +1,5 @@
-# No longer maintained
-*Great news for Plex and Amazon Echo fans alike!!* I am going to be working directly with Plex to make an official Alexa Plex skill, which will be totally streets ahead.
-
-Stay tuned to Plex's [official channels](https://blog.plex.tv/) for more!
-
-The final state of this public project will remain here for people to learn from, but no further development should be expected.
-
-*(original readme follows)*
+#Missing steps
+after npm install, run ```npm shrinkwrap``` to lock the dependencies for deployment. Amazon can't resolve the package.json file, so you either need to upload the node_modules folder manually, or shrinkwrap before running deploy.sh.
 
 # alexa-plex
 Alexa (Amazon Echo) app for interacting with a Plex Server and controlling client playback
