@@ -6,10 +6,6 @@
   "scripts": {
     "test": "grunt coveralls"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/OverloadUT/alexa-plex"
-  },
   "author": "Greg \"OverloadUT\" Laabs <OverloadUT@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -38,10 +34,10 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
-    "alexa-app": "OverloadUT/alexa-app#develop",
+    "alexa-app": "git://github.com/OverloadUT/alexa-app#develop",
     "clj-fuzzy": "^0.3.1",
     "dotenv": "^1.2.0",
-    "plex-api": "OverloadUT/node-plex-api#develop",
+    "plex-api": "git://github.com/phillipj/node-plex-api#master",
     "plex-api-pinauth": "^0.1.0",
     "q": "^1.4.1"
   }
