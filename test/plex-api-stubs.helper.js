@@ -67,7 +67,7 @@ module.exports.plexAPIStubFramework = function() {
         this.plexAPIStubs.postQuery.withArgs(sinon.match(/\/playQueues/))
             .resolves(require('./samples/playqueues.json'));
 
-        this.plexAPIStubs.perform.withArgs(sinon.match(/\/playMedia/))
+        this.plexAPIStubs.perform.withArgs(sinon.match.has("uri", sinon.match(/\/playMedia/)))
             .resolves();
 
         this.plexAPIStubs.find.withArgs('/clients')

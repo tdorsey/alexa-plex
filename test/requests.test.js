@@ -98,9 +98,9 @@ describe('Requests', function() {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest YesResponse/i);
                                 expect(self.plexAPIStubs.perform)
-                                    .to.have.been.calledWithMatch(/111111/i);
+                                    .to.have.been.calledWithMatch({ uri : sinon.match(/111111/i)});
                                 expect(self.plexAPIStubs.perform)
-                                    .to.have.been.calledWithMatch(/offset=0/i);
+                                    .to.have.been.calledWithMatch({ uri : sinon.match(/offset=0/i)});
                                 done();
                             }, fail: self.lambdaFail(done)
                         });
@@ -116,7 +116,7 @@ describe('Requests', function() {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest YesResponse/i);
                                 expect(self.plexAPIStubs.perform)
-                                    .to.have.been.calledWithMatch(/offset=12345/i);
+                                    .to.have.been.calledWithMatch({ uri : sinon.match(/offset=12345/i)});
                                 done();
                             }, fail: self.lambdaFail(done)
                         });
@@ -135,7 +135,7 @@ describe('Requests', function() {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/sorry/i);
                                 expect(self.plexAPIStubs.perform)
-                                    .to.have.been.calledWithMatch(/222222/i);
+                                    .to.have.been.calledWithMatch({ uri : sinon.match(/222222/i)});
                                 done();
                             }, fail: self.lambdaFail(done)
                         });
@@ -196,8 +196,8 @@ describe('Requests', function() {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest NoResponse/);
                                 expect(self.plexAPIStubs.perform)
-                                    .to.have.been.calledWithMatch(/111111/i)
-                                    .and.to.have.been.calledWithMatch(/offset=0/i);
+                                    .to.have.been.calledWithMatch({ uri : sinon.match(/111111/i)})
+                                    .and.to.have.been.calledWithMatch({ uri : sinon.match(/offset=0/i)});
                                 done();
                             }, fail: self.lambdaFail(done)
                         });
@@ -213,7 +213,7 @@ describe('Requests', function() {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest NoResponse/);
                                 expect(self.plexAPIStubs.perform)
-                                    .to.have.been.calledWithMatch(/offset=12345/i);
+                                    .to.have.been.calledWithMatch({ uri : sinon.match(/offset=12345/i)});
                                 done();
                             }, fail: self.lambdaFail(done)
                         });
@@ -231,8 +231,8 @@ describe('Requests', function() {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/MochaTest NoResponse/);
                                 expect(self.plexAPIStubs.perform)
-                                    .to.have.been.calledWithMatch(/222222/i)
-                                    .and.to.have.been.calledWithMatch(/offset=54321/i);
+                                    .to.have.been.calledWithMatch({ uri : sinon.match(/222222/i)})
+                                    .and.to.have.been.calledWithMatch({ uri : sinon.match(/offset=54321/i)});
                                 done();
                             }, fail: self.lambdaFail(done)
                         });
@@ -251,7 +251,7 @@ describe('Requests', function() {
                                 expect(res).to.have.deep.property('response.outputSpeech.ssml')
                                     .that.matches(/sorry/i);
                                 expect(self.plexAPIStubs.perform)
-                                    .to.have.been.calledWithMatch(/222222/i);
+                                    .to.have.been.calledWithMatch({ uri : sinon.match(/222222/i)});
                                 done();
                             }, fail: self.lambdaFail(done)
                         });
@@ -319,7 +319,7 @@ describe('Requests', function() {
             it('should handle a response with zero shows', function (done) {
                 this.plexAPIStubs.query.withArgs('/library/sections/1/onDeck').resolves(function(){
                     var response = JSON.parse(JSON.stringify(require('./samples/library_onDeck.json')));
-                    response._children = [];
+                    response.MediaContainer.Directory = [];
                     return response;
                 }());
 
@@ -368,7 +368,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/enjoy this episode from season/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -403,7 +403,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/next episode/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -418,7 +418,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/from where you left off/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia.*offset=379418/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia.*offset=379418/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -451,7 +451,7 @@ describe('Requests', function() {
                 this.plexAPIStubs.query.withArgs('/library/metadata/1/allLeaves')
                     .resolves(function(){
                         var result = JSON.parse(JSON.stringify(require('./samples/library_metadata_showepisodes_withunwatched.json')));
-                        result._children.reverse();
+                        result.MediaContainer.Metadata.reverse();
                         return result;
                     }());
 
@@ -461,7 +461,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/next episode.*Resurrection/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -477,8 +477,8 @@ describe('Requests', function() {
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/I couldn't find that show in your library/i);
-                        expect(self.plexAPIStubs.perform).to.not.have.been.calledWithMatch(/playMedia/i);
-                        expect(self.plexAPIStubs.postQuery).to.not.have.been.calledWithMatch(/playQueues/i);
+                        expect(self.plexAPIStubs.perform).to.not.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
+                        expect(self.plexAPIStubs.postQuery).to.not.have.been.calledWithMatch({ uri : sinon.match(/playQueues/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -533,7 +533,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/enjoy this episode from season/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -550,8 +550,8 @@ describe('Requests', function() {
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/I couldn't find that show in your library/i);
-                        expect(self.plexAPIStubs.perform).to.not.have.been.calledWithMatch(/playMedia/i);
-                        expect(self.plexAPIStubs.postQuery).to.not.have.been.calledWithMatch(/playQueues/i);
+                        expect(self.plexAPIStubs.perform).to.not.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
+                        expect(self.plexAPIStubs.postQuery).to.not.have.been.calledWithMatch({ uri : sinon.match(/playQueues/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -605,7 +605,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/enjoy this episode from season/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -622,8 +622,8 @@ describe('Requests', function() {
                         expect(res).to.not.have.deep.property('response.card');
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/I couldn't find that show in your library/i);
-                        expect(self.plexAPIStubs.perform).to.not.have.been.calledWithMatch(/playMedia/i);
-                        expect(self.plexAPIStubs.postQuery).to.not.have.been.calledWithMatch(/playQueues/i);
+                        expect(self.plexAPIStubs.perform).to.not.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
+                        expect(self.plexAPIStubs.postQuery).to.not.have.been.calledWithMatch({ uri : sinon.match(/playQueues/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -678,7 +678,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/S2E3/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -694,7 +694,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/S2E8/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -710,7 +710,7 @@ describe('Requests', function() {
                         expect(res.response.shouldEndSession).to.be.true;
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/S1E4/i);
-                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch(/playMedia/i);
+                        expect(self.plexAPIStubs.perform).to.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
@@ -725,8 +725,8 @@ describe('Requests', function() {
                         expect(res).to.have.deep.property('response.outputSpeech.ssml')
                             .that.matches(/I couldn't find that show in your library/i);
                         expect(res).to.not.have.deep.property('response.card');
-                        expect(self.plexAPIStubs.perform).to.not.have.been.calledWithMatch(/playMedia/i);
-                        expect(self.plexAPIStubs.postQuery).to.not.have.been.calledWithMatch(/playQueues/i);
+                        expect(self.plexAPIStubs.perform).to.not.have.been.calledWithMatch({ uri : sinon.match(/playMedia/i)});
+                        expect(self.plexAPIStubs.postQuery).to.not.have.been.calledWithMatch({ uri : sinon.match(/playQueues/i)});
                         done();
                     }, fail: self.lambdaFail(done)
                 });
