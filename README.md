@@ -19,10 +19,14 @@ Here's an early proof-of-concept video
 2. ```npm test``` to verify that all tests are passing. If they are, you're ready to rock!
 
 ## AWS Lambda
-The app is meant to be deployed as an **AWS Lambda** function. Setting that up is beyond the scope of this readme though. There's a deploy.bat file in this project that will deploy to AWS Lambda if you're on Windows, but you will need to have the AWS toolkit installed and configured, and have an "alexa-plex" function set up.
+The app is meant to be deployed as an **AWS Lambda** function. A CloudFormation template (cloudformation-template.yml) has been provided to aid setup. 
+To use the template, setup the AWS CLI and execute ```setup.sh```
+
+To deploy this project to Lambda, execute ```deploy.sh```
 
 ## Dynamo DB
-This app requires DynamoDB. You'll need to get that set up and create a table named `AlexaPlexUsers` with a primary string key of `userid`
+This app requires DynamoDB. You'll need to get that set up and create a table named `AlexaPlexUsers` with a primary string key of `userid`.
+This table will be created for you in the provided CloudFormation template.
 
 ## Testing on a live Plex server
 You need to define a few environment variables to tell this app how to talk to your Plex server. The project is set up to use ```dotenv``` so you can simply create a ```.env``` file in the project root to define all of the needed variables. Here's a template:
