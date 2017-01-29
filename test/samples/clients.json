@@ -1,17 +1,59 @@
-[
-  {
-    "_elementType": "Server",
-    "name": "MochaTestClient",
-    "host": "192.168.0.2",
-    "address": "STUBBED_CLIENT_ADDRESS_FROM_API_CALL",
-    "port": 3005,
-    "machineIdentifier": "MOCHATEST_PLAYER_MACHINE_IDENTIFIER",
-    "version": "1.4.1.469-47a90f01",
-    "protocol": "plex",
-    "product": "Plex Home Theater",
-    "deviceClass": "HTPC",
-    "protocolVersion": "1",
-    "protocolCapabilities": "navigation,playback,timeline,mirror,playqueues",
-    "uri": "/system/players/192.168.0.2"
-  }
-]
+{
+    "MediaContainer": {
+        "size": 3,
+        "Server": [
+            {
+                "name": "BRAVIA 4K GB",
+                "host": "10.1.10.13",
+                "address": "10.1.10.13",
+                "port": 32500,
+                "machineIdentifier": "b3df0104a27976c8-com-plexapp-android",
+                "version": "5.3.4.759",
+                "protocol": "plex",
+                "product": "Plex for Android",
+                "deviceClass": "mobile",
+                "protocolVersion": "1",
+                "protocolCapabilities": "timeline,playback,navigation,mirror,playqueues"
+            },
+            {
+                "name": "My AFTB",
+                "host": "10.1.10.35",
+                "address": "10.1.10.35",
+                "port": 32500,
+                "machineIdentifier": "992a9d00d4407db6-com-plexapp-android",
+                "version": "5.3.3.683",
+                "protocol": "plex",
+                "product": "Plex for Android",
+                "deviceClass": "mobile",
+                "protocolVersion": "1",
+                "protocolCapabilities": "timeline,playback,navigation,mirror,playqueues"
+            },
+            {
+                "name": "thing thats not a player",
+                "host": "10.1.10.35",
+                "address": "10.1.10.35",
+                "port": 32500,
+                "machineIdentifier": "992a9d00d4407db6-com-plexapp-android",
+                "version": "5.3.3.683",
+                "protocol": "plex",
+                "product": "Plex for Android",
+                "deviceClass": "mobile",
+                "protocolVersion": "1",
+                "protocolCapabilities": "timeline,navigation,mirror,playqueues"
+            },
+            {
+                "name": "Plex Web (Chrome)",
+                "host": "127.0.0.1",
+                "address": "127.0.0.1",
+                "port": 32400,
+                "machineIdentifier": "15649dd7-8600-4162-b125-8d60ace8c192",
+                "version": "2.12.8",
+                "protocol": "plex",
+                "product": "Plex Web",
+                "deviceClass": "pc",
+                "protocolVersion": "1",
+                "protocolCapabilities": "timeline,playback,navigation,mirror,playqueues"
+            }
+        ]
+    }
+}

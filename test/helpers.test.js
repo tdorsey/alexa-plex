@@ -15,7 +15,6 @@ describe('API Helpers', function() {
                 }
             },
             CONFIDICE_CONFIRM_THRESHOLD : 0.4
-
         };
     });
 
@@ -116,6 +115,26 @@ describe('API Helpers', function() {
                 .rejects(new Error("Stub error from Plex API"));
 
             return expect(this.plexutils.getListOfTVShows(this.app, this.library))
+                .to.be.rejected;
+        });
+    });
+
+    describe('getPlayers', function() {
+        it('should return a list of players that support playback', function() {
+            var self = this;
+            return expect(this.plexutils.getPlayers(this.app))
+                .to.eventually.include.keys(["0","1","2"])
+                .then(function(){
+                    expect(self.plexAPIStubs.query).to.have.been.calledOnce;
+                });
+        });
+
+        it('should reject the promise on a failed API call', function() {
+            this.plexAPIStubs.query.withArgs('/clients')
+                .rejects(new Error("Stub error from Plex API"));
+
+            var self = this;
+            return expect(this.plexutils.getPlayers(this.app))
                 .to.be.rejected;
         });
     });

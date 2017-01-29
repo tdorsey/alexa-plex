@@ -70,7 +70,7 @@ module.exports.plexAPIStubFramework = function() {
         this.plexAPIStubs.perform.withArgs(sinon.match.has("uri", sinon.match(/\/playMedia/)))
             .resolves();
 
-        this.plexAPIStubs.find.withArgs('/clients')
+        this.plexAPIStubs.query.withArgs('/clients')
             .resolves(require('./samples/clients.json'));
     });
 
