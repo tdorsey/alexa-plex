@@ -1,0 +1,94 @@
+---
+
+Description: "Stack for alexa-plex"
+
+Parameters:
+  FunctionName:
+    Type: String
+    Default: alexa-plex
+    Description: A name for your lambda function
+
+Resources:
+
+  AlexaPlexUsersTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: userid
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: userid
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: AlexaPlexUsers
+
+  LambdaBasicExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+
+  RolePolicies:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: LambaBasicExecutionPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+            Resource: "arn:aws:logs:*:*:*"
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:GetItem"
+              - "dynamodb:PutItem"
+              - "dynamodb:UpdateItem"
+            Resource: "arn:aws:dynamodb:*:*:table/AlexaPlexUsers"
+      Roles:
+        -
+          Ref: LambdaBasicExecutionRole
+
+  AlexaPlexLambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: !Ref FunctionName
+      Description: "alexa-plex"
+      Handler: "index.handler"
+      Role:
+        Fn::GetAtt:
+          - LambdaBasicExecutionRole
+          - Arn
+      Code:
+        ZipFile: >
+          var response = require('cfn-response');
+          exports.handler = function(event, context) {
+            var input = parseInt(event.ResourceProperties.Input);
+            var responseData = {Value: input * 5};
+            response.send(event, context, response.SUCCESS, responseData);
+          };
+      Runtime: "nodejs4.3"
+      Timeout: "25"
+    DependsOn: RolePolicies
+
+  AlexaSkillFunctionPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref FunctionName
+      Principal: alexa-appkit.amazon.com
+    DependsOn: AlexaPlexLambda
