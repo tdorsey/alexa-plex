@@ -1,14 +1,26 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 
-// TODO All of these tests need to have rewritten scaffolding, due to the new way that plex api construction works
-describe.skip('API Helpers', function() {
+describe('API Helpers', function() {
     before('Set up stubs', function() {
         this.plexutils = require('../lib/plexutils.js');
         this.utils = require('../lib/utils.js');
+        this.library = { key : "1"}
+        this.app = {
+            plex : { pms : this.plexAPIStubs},
+            user : {
+                TVLibrary : this.library,
+                player : {
+                    machineIdentifier : "machineIdentifier"
+                }
+            },
+            CONFIDICE_CONFIRM_THRESHOLD : 0.4
+
+        };
     });
 
-    describe('getClientIP', function() {
+    //TODO: it looks like these skipped tests are for features that are no longer supported. Delete?
+    describe.skip('getClientIP', function() {
 
         it('should return the IP from cache without an API call', function () {
             process.env.PLEXPLAYER_IP = "MOCHATEST_CACHED_PLAYER_IP";
@@ -46,7 +58,7 @@ describe.skip('API Helpers', function() {
         });
     });
 
-    describe('getMachineIdentifier', function() {
+    describe.skip('getMachineIdentifier', function() {
 
         it('should return the identifier from cache without an API call', function () {
             process.env.PMS_IDENTIFIER = "MOCHATEST_CACHED_MACHINE_ID";
@@ -84,6 +96,7 @@ describe.skip('API Helpers', function() {
         });
     });
 
+
     describe('getListOfTVShows', function() {
 
         it('should return a list of TV shows', function () {
@@ -91,7 +104,7 @@ describe.skip('API Helpers', function() {
                 .resolves(require('./samples/library_section_allshows.json'));
 
             var self = this;
-            return expect(this.plexutils.getListOfTVShows())
+            return expect(this.plexutils.getListOfTVShows(this.app, this.library))
                 .to.eventually.be.an('object')
                 .then(function(){
                     expect(self.plexAPIStubs.query).to.have.been.calledOnce;
@@ -102,7 +115,7 @@ describe.skip('API Helpers', function() {
             this.plexAPIStubs.query.withArgs('/library/sections/1/all')
                 .rejects(new Error("Stub error from Plex API"));
 
-            return expect(this.plexutils.getListOfTVShows())
+            return expect(this.plexutils.getListOfTVShows(this.app, this.library))
                 .to.be.rejected;
         });
     });
@@ -114,7 +127,7 @@ describe.skip('API Helpers', function() {
                 .resolves(require('./samples/library_metadata_showepisodes_allwatched.json'));
 
             var self = this;
-            return expect(this.plexutils.getAllEpisodesOfShow(5))
+            return expect(this.plexutils.getAllEpisodesOfShow(this.app, 5))
                 .to.eventually.be.an('object')
                 .then(function(){
                     expect(self.plexAPIStubs.query).to.have.been.calledOnce;
@@ -126,7 +139,7 @@ describe.skip('API Helpers', function() {
                 .resolves(require('./samples/library_metadata_showepisodes_allwatched.json'));
 
             var self = this;
-            return expect(this.plexutils.getAllEpisodesOfShow('6'))
+            return expect(this.plexutils.getAllEpisodesOfShow(this.app, "6"))
                 .to.eventually.be.an('object')
                 .then(function(){
                     expect(self.plexAPIStubs.query).to.have.been.calledOnce;
@@ -138,7 +151,7 @@ describe.skip('API Helpers', function() {
                 .resolves(require('./samples/library_metadata_showepisodes_allwatched.json'));
 
             var self = this;
-            return expect(this.plexutils.getAllEpisodesOfShow({ratingKey:7}))
+            return expect(this.plexutils.getAllEpisodesOfShow(this.app, {ratingKey:7}))
                 .to.eventually.be.an('object')
                 .then(function(){
                     expect(self.plexAPIStubs.query).to.have.been.calledOnce;
@@ -149,7 +162,7 @@ describe.skip('API Helpers', function() {
             this.plexAPIStubs.query.withArgs('/library/metadata/6/allLeaves')
                 .rejects(new Error("Stub error from Plex API"));
 
-            return expect(this.plexutils.getAllEpisodesOfShow(6))
+            return expect(this.plexutils.getAllEpisodesOfShow(this.app, 6))
                 .to.be.rejected;
         });
     });
@@ -158,7 +171,9 @@ describe.skip('API Helpers', function() {
         before(function() {
             this.responseStub = {
                 say: sinon.stub(),
-                card: sinon.stub()
+                card: sinon.stub(),
+                session: function(name, data){},
+                shouldEndSession: function(){}
             }
         });
 
@@ -174,7 +189,7 @@ describe.skip('API Helpers', function() {
 
         it("should play the next unwatched episode if it's available", function () {
             var self = this;
-            return expect(this.plexutils.startShow({spokenShowName:'a show with unwatched episodes'}, this.responseStub))
+            return expect(this.plexutils.startShow(this.app, {spokenShowName:'a show with unwatched episodes'}, this.responseStub))
                 .to.be.fulfilled
                 .then(function(){
                     expect(self.responseStub.say).to.have.been.calledWithMatch(/next episode of/);
@@ -183,7 +198,7 @@ describe.skip('API Helpers', function() {
 
         it("should play a random episode if no unwatched show is available", function () {
             var self = this;
-            return expect(this.plexutils.startShow({spokenShowName:"A Show I've Finished Watching"}, this.responseStub))
+            return expect(this.plexutils.startShow(this.app, {spokenShowName:"A Show I've Finished Watching"}, this.responseStub))
                 .to.be.fulfilled
                 .then(function(){
                     expect(self.responseStub.say).to.have.been.calledWithMatch(/this episode from season/i);
@@ -192,7 +207,7 @@ describe.skip('API Helpers', function() {
 
         it("should always play a random episode if forceRandom is set", function () {
             var self = this;
-            return expect(this.plexutils.startShow({
+            return expect(this.plexutils.startShow(this.app, {
                 spokenShowName:'a show with unwatched episodes',
                 forceRandom: true
             }, this.responseStub))
