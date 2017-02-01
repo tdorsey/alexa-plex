@@ -13,6 +13,7 @@ require('sinon-as-promised');
 var Q = require('q');
 
 require('./plex-api-stubs.helper.js').plexAPIStubFramework();
+require('./db-helper.js').dbFramework();
 
 before('Start dynalite (mock DynamoDB server)', function(done) {
     var dynalite = require('dynalite');

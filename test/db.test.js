@@ -1,6 +1,11 @@
+var expect = require('chai').expect;
+
+require('./db-helper.js').dbFramework();
 describe('db module', function() {
     before(function() {
-        this.db = require('../lib/db')
+        this.db = require('../lib/db');
+        this.user = "userid";
+        this.player = { "name" : "myplayer"};
     });
 
     describe('initializeUserRecord', function() {
@@ -8,6 +13,15 @@ describe('db module', function() {
         it('should create a new record if none existed');
         it('should gracefully handle a DB error in the get request');
         it('should gracefully handle a DB error in the put request');
+        it.only('should save a player', function() {
+            var self = this;
+            return expect(this.db.updateUserPlayer(this.user, this.player))
+                .to.eventually.be.an('object')
+                .then(function(){
+                    console.log("there");
+                    expect(self.testdb.queryUser(self.user)).to.be.an('object');
+                });
+        });
     });
 
 });

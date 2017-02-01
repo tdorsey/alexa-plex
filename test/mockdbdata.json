@@ -1,171 +1,207 @@
 [
-  {
-    "userid": "MOCHA_USER_WITH_NO_PIN",
-    "authtoken": "MOCHA_FAKE_AUTH_TOKEN"
-  },
-  {
-    "userid": "MOCHA_FULLY_SETUP_USER",
-    "authtoken": "MOCHA_FAKE_AUTH_TOKEN",
-    "server": {
-      "attributes": {
-        "platform": "Windows",
-        "synced": "0",
-        "clientIdentifier": "MOCHA_SERVER_IDENTIFIER",
-        "accessToken": "MOCHA_SERVER_ACCESS_TOKEN",
-        "publicAddressMatches": "1",
-        "provides": "server",
-        "productVersion": "0.9.15.0.1621-344f193",
-        "httpsRequired": "0",
-        "owned": "1",
-        "product": "Plex Media Server",
-        "platformVersion": "10.0 (Build 10240)",
-        "presence": "1",
-        "lastSeenAt": "1452120204",
-        "createdAt": "1358573159",
-        "name": "MOCHA_SERVER_NAME",
-        "device": "PC"
-      },
-      "Connection": [
-        {
-          "attributes": {
-            "port": "32400",
-            "protocol": "https",
-            "address": "192.168.0.2",
-            "local": "1",
-            "uri": "https://secure-local-url:32400"
-          }
+    {
+        "authtoken": "authtoken",
+        "libraries": [
+            {
+                "agent": "com.plexapp.agents.none",
+                "allowSync": true,
+                "art": "/:/resources/photo-fanart.jpg",
+                "composite": "/library/sections/6/composite/1484636283",
+                "createdAt": 1484636283,
+                "enableAutoPhotoTags": false,
+                "filters": true,
+                "key": "6",
+                "language": "xn",
+                "Location": [
+                    {
+                        "id": 7,
+                        "path": "/var/lib/plexmediaserver/Library/Application Support/Plex Media Server/Media Upload/Mobile Photos"
+                    }
+                ],
+                "refreshing": false,
+                "scanner": "Plex Photo Scanner",
+                "thumb": "/:/resources/photo.png",
+                "title": "Mobile Photos",
+                "type": "photo",
+                "updatedAt": 1484636283,
+                "uuid": "84c96d23-b389-425c-bc51-415999fed400"
+            },
+            {
+                "agent": "com.plexapp.agents.imdb",
+                "allowSync": true,
+                "art": "/:/resources/movie-fanart.jpg",
+                "composite": "/library/sections/4/composite/1471838703",
+                "createdAt": 1438491416,
+                "filters": true,
+                "key": "4",
+                "language": "en",
+                "Location": [
+                    {
+                        "id": 4,
+                        "path": "/chaboga/vids/movies"
+                    }
+                ],
+                "refreshing": false,
+                "scanner": "Plex Movie Scanner",
+                "thumb": "/:/resources/movie.png",
+                "title": "Movies",
+                "type": "movie",
+                "updatedAt": 1471838703,
+                "uuid": "919b0743-bf1d-4275-9840-432ab34469fb"
+            },
+            {
+                "agent": "com.plexapp.agents.none",
+                "allowSync": true,
+                "art": "/:/resources/photo-fanart.jpg",
+                "composite": "/library/sections/5/composite/1484635986",
+                "createdAt": 1484635986,
+                "enableAutoPhotoTags": false,
+                "filters": true,
+                "key": "5",
+                "language": "xn",
+                "Location": [
+                    {
+                        "id": 6,
+                        "path": "/chaboga/pics"
+                    }
+                ],
+                "refreshing": false,
+                "scanner": "Plex Photo Scanner",
+                "thumb": "/:/resources/photo.png",
+                "title": "Photos",
+                "type": "photo",
+                "updatedAt": 1484635986,
+                "uuid": "c1022076-f6fa-4dac-95f8-2ed3f813078a"
+            },
+            {
+                "agent": "com.plexapp.agents.imdb",
+                "allowSync": true,
+                "art": "/:/resources/movie-fanart.jpg",
+                "composite": "/library/sections/3/composite/1471838704",
+                "createdAt": 1438491352,
+                "filters": true,
+                "key": "3",
+                "language": "en",
+                "Location": [
+                    {
+                        "id": 3,
+                        "path": "/chaboga/vids/rifftrax"
+                    }
+                ],
+                "refreshing": false,
+                "scanner": "Plex Video Files Scanner",
+                "thumb": "/:/resources/movie.png",
+                "title": "rifftrax",
+                "type": "movie",
+                "updatedAt": 1471838704,
+                "uuid": "72e154e1-9208-47e9-aea3-a6739ef6072c"
+            },
+            {
+                "agent": "com.plexapp.agents.thetvdb",
+                "allowSync": true,
+                "art": "/:/resources/show-fanart.jpg",
+                "composite": "/library/sections/1/composite/1471839386",
+                "createdAt": 1432868305,
+                "filters": true,
+                "key": "1",
+                "language": "en",
+                "Location": [
+                    {
+                        "id": 1,
+                        "path": "/datalore/vids/SHOWS"
+                    },
+                    {
+                        "id": 5,
+                        "path": "/chaboga/vids/Star Trek"
+                    }
+                ],
+                "refreshing": false,
+                "scanner": "Plex Series Scanner",
+                "thumb": "/:/resources/show.png",
+                "title": "TV Shows",
+                "type": "show",
+                "updatedAt": 1471839386,
+                "uuid": "e5dd8825-a59a-44a7-aa7a-1721df5ff098"
+            }
+        ],
+        "pin": {
+            "code": "code",
+            "id": "1337"
         },
-        {
-          "attributes": {
-            "port": "12345",
-            "protocol": "https",
-            "address": "10.10.100.1",
-            "local": "0",
-            "uri": "https://secure-public-url:12345"
-          }
-        }
-      ]
-    },
-    "player": {
-      "protocolCapabilities": "navigation,playback,timeline,mirror,playqueues",
-      "product": "Plex Home Theater",
-      "port": 3005,
-      "protocol": "plex",
-      "machineIdentifier": "MOCHA_PLAYER_IDENTIFIER",
-      "protocolVersion": "1",
-      "host": "192.168.0.30",
-      "address": "192.168.0.30",
-      "_elementType": "Server",
-      "name": "MOCHA_PLAYER_NAME",
-      "deviceClass": "HTPC",
-      "uri": "/system/players/192.168.0.3",
-      "version": "1.4.1.469-47a90f01"
-    },
-    "libraries": [
-      {
-        "_children": [
-          {
-            "_elementType": "Location",
-            "id": 6,
-            "path": "X:\\Second Show Library"
-          }
-        ],
-        "_elementType": "Directory",
-        "agent": "com.plexapp.agents.none",
-        "allowSync": "1",
-        "art": "/:/resources/show-fanart.jpg",
-        "composite": "/library/sections/6/composite/1451275405",
-        "createdAt": "1445280422",
-        "filters": "1",
-        "key": "6",
-        "language": "xn",
-        "refreshing": "0",
-        "scanner": "Plex Series Scanner",
-        "thumb": "/:/resources/show.png",
-        "title": "A Second Show Library",
-        "type": "show",
-        "updatedAt": "1451275405",
-        "uri": "/library/sections/6",
-        "uuid": "MOCHA-SECOND-SHOW-LIBRARY"
-      },
-      {
-        "_children": [
-          {
-            "_elementType": "Location",
-            "id": 9,
-            "path": "X:\\Photo Library"
-          }
-        ],
-        "_elementType": "Directory",
-        "agent": "com.plexapp.agents.none",
-        "allowSync": "1",
-        "art": "/:/resources/photo-fanart.jpg",
-        "composite": "/library/sections/8/composite/1451863622",
-        "createdAt": "1451771154",
-        "filters": "1",
-        "key": "8",
-        "language": "xn",
-        "refreshing": "0",
-        "scanner": "Plex Photo Scanner",
-        "thumb": "/:/resources/photo.png",
-        "title": "A Photo Library",
-        "type": "photo",
-        "updatedAt": "1451863622",
-        "uri": "/library/sections/8",
-        "uuid": "MOCHA-PHOTO-LIBRARY"
-      },
-      {
-        "_children": [
-          {
-            "_elementType": "Location",
-            "id": 7,
-            "path": "X:\\Movies"
-          }
-        ],
-        "_elementType": "Directory",
-        "agent": "com.plexapp.agents.imdb",
-        "allowSync": "1",
-        "art": "/:/resources/movie-fanart.jpg",
-        "composite": "/library/sections/7/composite/1452142833",
-        "createdAt": "1451106439",
-        "filters": "1",
-        "key": "7",
-        "language": "en",
-        "refreshing": "0",
-        "scanner": "Plex Movie Scanner",
-        "thumb": "/:/resources/movie.png",
-        "title": "A Movie Library",
-        "type": "movie",
-        "updatedAt": "1452142833",
-        "uri": "/library/sections/7",
-        "uuid": "MOCHA-MOVIE-LIBRARY"
-      },
-      {
-        "_children": [
-          {
-            "_elementType": "Location",
-            "id": 1,
-            "path": "X:\\TV Shows"
-          }
-        ],
-        "_elementType": "Directory",
-        "agent": "com.plexapp.agents.thetvdb",
-        "allowSync": "1",
-        "art": "/:/resources/show-fanart.jpg",
-        "composite": "/library/sections/1/composite/1452295590",
-        "createdAt": "1358402130",
-        "filters": "1",
-        "key": "1",
-        "language": "en",
-        "refreshing": "0",
-        "scanner": "Plex Series Scanner",
-        "thumb": "/:/resources/show.png",
-        "title": "A TV Show Library",
-        "type": "show",
-        "updatedAt": "1452295590",
-        "uri": "/library/sections/1",
-        "uuid": "MOCHA-TV-SHOW-LIBRARY"
-      }
-    ]
-  }
+        "player": {
+            "address": "10.1.10.13",
+            "deviceClass": "mobile",
+            "host": "10.1.10.13",
+            "machineIdentifier": "b3df0104a27976c8-com-plexapp-android",
+            "name": "BRAVIA 4K GB",
+            "port": 32500,
+            "product": "Plex for Android",
+            "protocol": "plex",
+            "protocolCapabilities": "timeline,playback,navigation,mirror,playqueues",
+            "protocolVersion": "1",
+            "version": "5.3.4.759"
+        },
+        "server": {
+            "attributes": {
+                "accessToken": "accessToken",
+                "clientIdentifier": "clientIdentifier",
+                "createdAt": "1432868186",
+                "device": "PC",
+                "httpsRequired": "0",
+                "lastSeenAt": "1485494100",
+                "name": "peachtree",
+                "owned": "1",
+                "platform": "Linux",
+                "platformVersion": "4.4.0-47-generic (#68-Ubuntu SMP Wed Oct 26 19:39:52 UTC 2016)",
+                "presence": "1",
+                "product": "Plex Media Server",
+                "productVersion": "1.3.3.3148-b38628e",
+                "provides": "server",
+                "publicAddress": "127.0.0.1",
+                "publicAddressMatches": "0",
+                "relay": "1",
+                "synced": "0"
+            },
+            "Connection": [
+                {
+                    "attributes": {
+                        "address": "127.0.0.1",
+                        "local": "1",
+                        "port": "32400",
+                        "protocol": "https",
+                        "uri": "https://plex.direct:32400"
+                    }
+                },
+                {
+                    "attributes": {
+                        "address": "127.0.0.1",
+                        "local": "1",
+                        "port": "32400",
+                        "protocol": "https",
+                        "uri": "https://plex.direct:32400"
+                    }
+                },
+                {
+                    "attributes": {
+                        "address": "127.0.0.1",
+                        "local": "1",
+                        "port": "32400",
+                        "protocol": "https",
+                        "uri": "https://plex.direct:32400"
+                    }
+                },
+                {
+                    "attributes": {
+                        "address": "127.0.0.1",
+                        "local": "0",
+                        "port": "32400",
+                        "protocol": "https",
+                        "uri": "https://plex.direct:32400"
+                    }
+                }
+            ]
+        },
+        "userid": "amzn1.ask.account.longstring"
+    }
 ]
+
