@@ -37,7 +37,6 @@
     "alexa-app": "git://github.com/OverloadUT/alexa-app#develop",
     "clj-fuzzy": "^0.3.1",
     "dotenv": "^1.2.0",
-    "dynalite": "^1.1.0",
     "plex-api": "git://github.com/phillipj/node-plex-api#master",
     "plex-api-pinauth": "^0.1.0",
     "q": "^1.4.1"
