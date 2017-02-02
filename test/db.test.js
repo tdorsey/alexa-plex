@@ -13,13 +13,13 @@ describe('db module', function() {
         it('should create a new record if none existed');
         it('should gracefully handle a DB error in the get request');
         it('should gracefully handle a DB error in the put request');
-        it.only('should save a player', function() {
+        it.only('should save a player', function(done) {
             var self = this;
             return expect(this.db.updateUserPlayer(this.user, this.player))
                 .to.eventually.be.an('object')
-                .then(function(){
-                    console.log("there");
-                    expect(self.testdb.queryUser(self.user)).to.be.an('object');
+                .then(function(updatedUser){
+                    expect(self.testdb.queryUser(self.user)).to.eventually.deep.equal(updatedUser.Attributes)
+                        .notify(done);
                 });
         });
     });
